@@ -12,17 +12,25 @@ const customFonts = {
   'OpenSans-Regular': require('Assets/fonts/OpenSans-Regular.ttf'),
   'Montserrat-Italic': require('Assets/fonts/Montserrat-Italic.ttf'),
   'GreatVibes-Regular': require('Assets/fonts/GreatVibes-Regular.ttf'),
+
+  'Inter-Regular': require('Assets/fonts/Inter-Regular.otf'),
+  'Inter-SemiBold': require('Assets/fonts/Inter-SemiBold.otf'),
+  'SourceSansPro-Regular': require('Assets/fonts/SourceSansPro-Regular.ttf'),
+  'SourceSansPro-SemiBold': require('Assets/fonts/SourceSansPro-SemiBold.ttf'),
+  'Poppins-Regular': require('Assets/fonts/Poppins-Regular.ttf'),
+  'Poppins-SemiBold': require('Assets/fonts/Poppins-SemiBold.ttf'),
+  'Poppins-Medium': require('Assets/fonts/Poppins-Medium.ttf'),
+  'Poppins-Bold': require('Assets/fonts/Poppins-Bold.ttf'),
+  'Poppins-Black': require('Assets/fonts/Poppins-Black.ttf'),
+ 
 };
 const type = {
-  primary: 'Montserrat-Regular',
-  secondary: 'OpenSans-Regular',
-  black: 'Montserrat-Black',
-  medium: 'Montserrat-Medium',
-  bold: 'Montserrat-Bold',
-  semi: 'Montserrat-SemiBold',
-  extra: 'Montserrat-ExtraBold',
-  stylish: 'GreatVibes-Regular',
-  italic: 'Montserrat-Italic',
+  primary: 'Poppins-Regular',
+  secondary: 'Inter-Regular',
+  black: 'Poppins-Black',
+  medium: 'Poppins-Medium',
+  bold: 'Poppins-Bold',
+  semi: 'Poppins-SemiBold',
 };
 
 const Fonts = { customFonts, type };

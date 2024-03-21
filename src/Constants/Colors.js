@@ -1,10 +1,11 @@
 const Colors = {
-  background: '#fafafa',
+  background: '#1F1D2B',
+  tabBackground: '#252836',
 
-  primary: '#2089dc',
-  secondary: '#8F0CE8',
+  primary: '#6C5ECF',
+  secondary: '#ffffff',
   accent: '#22DDF2',
-  grey0: '#393e42',
+  grey0: '#808191',
   grey1: '#43484d',
   grey2: '#5e6977',
   grey3: '#86939e',
@@ -18,6 +19,7 @@ const Colors = {
 
   black: '#000000',
   white: '#ffffff',
+  blue: '#2648D1',
 
   border: 'rgb(216, 216, 216)',
   card: 'rgb(255, 255, 255)',
