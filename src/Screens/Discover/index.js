@@ -1,10 +1,11 @@
 import React from "react";
-import { StatusBar, Text, View, FlatList } from 'react-native'
+import { StatusBar, ScrollView, View, FlatList } from 'react-native'
 import { Colors, Fonts, Images } from "Constants";
 import styled from "styled-components/native";
 import {McText, McImage} from 'Components';
 import {LinearGradient} from 'expo-linear-gradient'
 import { dummyData } from 'Mock'
+import moment from "moment";
 
 const _renderTeamsItem = ({item, index}) => {
     return (
@@ -51,10 +52,35 @@ const _renderMatchesItem = ({item, index}) => {
         </MatchItemBox>
     )
 }
+
+const NewsItem = ({ item, index }) => (
+    <View>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <McImage source={item.thumbnail} style={{
+                width:120,
+                height: 93,
+                borderRadius: 10,
+                marginRight: 10
+            }}/>
+            <View style={{
+                width: 189,
+                justifyContent: 'space-between'
+            }}>
+                <McText medium size={14} numberOfLines={2}>{item.title}</McText>
+                <McText regular size={11} color="#808191">
+                    {item.views} views - {moment(item.date).fromNow()}
+                </McText>
+                <McText regular size={12}>{item.author.name}</McText>
+            </View>
+        </View>
+    </View>
+)
+
 const Discover = ( {
     params,
 }) => (
     <Container>
+        <ScrollView contentContainerStyle={{}} style={{}}>
         <StatusBar hidden={true}/>
         {/* Header Section */}
         <HeaderSection >
@@ -154,6 +180,38 @@ const Discover = ( {
                 renderItem={_renderMatchesItem}
             ></FlatList>
         </View>
+        {/* News Section */}
+        <Header2Section>
+            <McText semi size={18}>
+                Latest News
+            </McText>
+            <McText semi size={9} color='#A0A3BD'>
+                View All
+            </McText>
+        </Header2Section>
+        <View>
+            <FlatList 
+                keyExtractor={(item)=> '_news' + item.id}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{}}
+                data={dummyData.News}
+                renderItem={ ( {item, index} ) =>  (
+                    <View style={{
+                        width: 319,
+                        height: 93,
+                        marginTop: 15,
+                        marginLeft: index === 0 ? 16 :0,
+                        marginRight: index === dummyData.length - 1 ? 0 : 10,
+
+                    }}>
+                        <NewsItem item={item}/>
+                    </View>
+                )}
+            ></FlatList>
+        </View>
+        <View style={{marginTop: 20}}></View>
+        </ScrollView>
     </Container>
 )
 
