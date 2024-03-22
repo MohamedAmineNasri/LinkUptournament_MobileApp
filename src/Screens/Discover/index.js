@@ -1,9 +1,23 @@
 import React from "react";
-import { StatusBar, Text, View } from 'react-native'
+import { StatusBar, Text, View, FlatList } from 'react-native'
 import { Colors, Fonts, Images } from "Constants";
 import styled from "styled-components/native";
 import {McText, McImage} from 'Components';
 import {LinearGradient} from 'expo-linear-gradient'
+import { dummyData } from 'Mock'
+
+const _renderTeamsItem = ({item, index}) => {
+    return (
+        <TeamItemBox 
+            style={{
+                marginLeft: index === 0 ? 16 : 0,
+                marginRight: index === dummyData.Teams.length - 1 ? 0 : 10,
+            }}
+        >
+            <BigTeamLogo source={item.logo} />
+        </TeamItemBox>
+    )
+}
 const Discover = ( {
     params,
 }) => (
@@ -70,6 +84,24 @@ const Discover = ( {
                 <McImage source={require('Assets/images/Zidane.png')}/>
             </View>
         </BannerSection>
+        <Header2Section>
+            <McText semi size={18}>
+                Popular Teams
+            </McText>
+            <McText semi size={9} color='#A0A3BD'>
+                View All
+            </McText>
+        </Header2Section>
+        <View>
+            <FlatList 
+                keyExtractor={(item)=> '_team' + item.id}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{}}
+                data={dummyData.Teams}
+                renderItem={_renderTeamsItem}
+            ></FlatList>
+        </View>
     </Container>
 )
 
@@ -91,5 +123,25 @@ const HeaderSection = styled.View`
     flex-direction: row;
     justify-content: space-between;
     align-items: center
+` 
+const Header2Section = styled.View`
+    height: 40px;
+    margin: 23px 16px 0px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center
+` 
+const TeamItemBox = styled.View`
+    width: 70px;
+    height: 65px;
+    border-radius: 10px;
+    background-color: #222232;
+    align-items: center;
+    margin-top: 20px;
+` 
+const BigTeamLogo = styled.Image`
+    width: 50px;
+    height: 55px;
+
 ` 
 export default Discover
