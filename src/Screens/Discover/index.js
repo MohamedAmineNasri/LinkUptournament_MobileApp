@@ -18,6 +18,39 @@ const _renderTeamsItem = ({item, index}) => {
         </TeamItemBox>
     )
 }
+const _renderMatchesItem = ({item, index}) => {
+    return (
+        <MatchItemBox 
+            style={{
+                marginLeft: index === 0 ? 16 : 0,
+                marginRight: index === dummyData.Teams.length - 1 ? 0 : 10,
+            }}
+        >
+            <View
+                style={{
+                    alignSelf:'center',
+                    padding: 6,
+                    backgroundColor: 'white',
+                    borderRadius: 30
+                }}
+            >
+                <McText bold size={9} color="#2648D1">{item.name}</McText>
+            </View>
+            <View style={{
+                width:90,
+                justifyContent: 'space-between',
+                flexDirection: 'row',
+                marginTop: 9,
+            }}>
+                <MediumTeamLogo source={item.team1.logo} />
+                <MediumTeamLogo source={item.team2.logo} />
+            </View>
+            <McText bold size={10} style={{marginTop: 9}}>{item.team1.name}</McText>
+            <McText bold size={8}>Vs</McText>
+            <McText bold size={10}>{item.team2.name}</McText>
+        </MatchItemBox>
+    )
+}
 const Discover = ( {
     params,
 }) => (
@@ -102,6 +135,25 @@ const Discover = ( {
                 renderItem={_renderTeamsItem}
             ></FlatList>
         </View>
+        {/*  Matches Section */}
+        <Header2Section>
+            <McText semi size={18}>
+                Upcoming Matches
+            </McText>
+            <McText semi size={9} color='#A0A3BD'>
+                View All
+            </McText>
+        </Header2Section>
+        <View>
+            <FlatList 
+                keyExtractor={(item)=> '_match' + item.id}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{}}
+                data={dummyData.Matches}
+                renderItem={_renderMatchesItem}
+            ></FlatList>
+        </View>
     </Container>
 )
 
@@ -143,5 +195,19 @@ const BigTeamLogo = styled.Image`
     width: 50px;
     height: 55px;
 
+` 
+const MatchItemBox = styled.View`
+    width: 112px;
+    height: 156px;
+    border-radius: 10px;
+    background-color: #222232;
+    align-items: center;
+    margin-top: 10px;
+    background-color: ${(props)=> Colors.blue};
+` 
+const MediumTeamLogo = styled.Image`
+    width: 40px;
+    height: 43px;
+    
 ` 
 export default Discover
