@@ -6,6 +6,7 @@ import {McText, McImage} from 'Components';
 import {LinearGradient} from 'expo-linear-gradient'
 import { dummyData } from 'Mock'
 import moment from "moment";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const _renderTeamsItem = ({item, index}) => {
     return (
@@ -77,7 +78,7 @@ const NewsItem = ({ item, index }) => (
 )
 
 const Discover = ( {
-    params,
+    navigation,
 }) => (
     <Container>
         <ScrollView contentContainerStyle={{}} style={{}}>
@@ -197,7 +198,13 @@ const Discover = ( {
                 contentContainerStyle={{}}
                 data={dummyData.News}
                 renderItem={ ( {item, index} ) =>  (
-                    <View style={{
+                    <TouchableOpacity
+                        onPress={
+                            () => {
+                                navigation.navigate('ArticleDetail', {selectedArticle: item})
+                            }
+                        }
+                        style={{
                         width: 319,
                         height: 93,
                         marginTop: 15,
@@ -206,7 +213,7 @@ const Discover = ( {
 
                     }}>
                         <NewsItem item={item}/>
-                    </View>
+                    </TouchableOpacity>
                 )}
             ></FlatList>
         </View>

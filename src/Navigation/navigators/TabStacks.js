@@ -3,7 +3,7 @@ import { Text, View } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import Tabs from './Tabs';
-import { Profile } from 'Screens';
+import { Profile,ArticleDetail } from 'Screens';
 
 const Stack = createStackNavigator();
 
@@ -12,6 +12,13 @@ const TabStacks = ({ params }) => (
     <Stack.Screen
       name="Tabs"
       component={Tabs}
+      options={{
+        headerShown: false,
+      }}
+    />
+    <Stack.Screen
+      name="ArticleDetail"
+      component={ArticleDetail}
       options={{
         headerShown: false,
       }}
