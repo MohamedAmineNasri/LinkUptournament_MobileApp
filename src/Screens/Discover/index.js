@@ -12,94 +12,99 @@ import axios from 'axios';
 
 
 
-const _renderTeamsItem = ({item, index}) => {
-    return (
-        <TeamItemBox 
-            style={{
-                marginLeft: index === 0 ? 16 : 0,
-                marginRight: index === dummyData.Teams.length - 1 ? 0 : 10,
-            }}
-        >
-            <BigTeamLogo source={item.logo} />
-        </TeamItemBox>
-    )
-}
-
-
-const NewsItem = ({ item, index }) => (
-    <View>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <McImage source={item.thumbnail} style={{
-                width:120,
-                height: 93,
-                borderRadius: 10,
-                marginRight: 10
-            }}/>
-            <View style={{
-                width: 189,
-                justifyContent: 'space-between'
-            }}>
-                <McText medium size={14} numberOfLines={2}>{item.title}</McText>
-                <McText regular size={11} color="#808191">
-                    {item.views} views - {moment(item.date).fromNow()}
-                </McText>
-                <McText regular size={12}>{item.author.name}</McText>
-            </View>
-        </View>
-    </View>
-)
-
 const Discover = ({ navigation }) => {
     const [matches, setMatches] = useState([]);
-  
+    const [teams, setTeams] = useState([]);
+
     useEffect(() => {
-        // Fetch data from your Node.js API
         const fetchData = async () => {
-          try {
-            const response = await axios.get('http://192.168.1.17:8000/match/getAllematchByNameTeam');
-            setMatches(response.data);
-          } catch (error) {
-            console.error('Error fetching data:', error);
-          }
+            try {
+                const response = await axios.get('http://192.168.1.17:8000/match/getAllematchByNameTeam');
+                // Ensure each match has a valid _id property
+                const matchesData = response.data.map(match => ({ ...match, _id: match._id || Math.random().toString() }));
+                setMatches(matchesData);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
         };
-      
+
         fetchData();
-      }, []); // Empty array as second parameter ensures useEffect runs only once
-      
-    const _renderTeamsItem = ({ item, index }) => {
-      return (
-        <TeamItemBox 
-            style={{
-                marginLeft: index === 0 ? 16 : 0,
-                marginRight: index === dummyData.Teams.length - 1 ? 0 : 10,
-            }}
-        >
-            <BigTeamLogo source={item.logo} />
-        </TeamItemBox>
-      );
-    };
-  
+    }, []);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get('http://192.168.1.17:8000/team');
+                // Ensure each team has a valid id property
+                const teamsData = response.data.map(team => ({ ...team, id: team.id || Math.random().toString() }));
+                setTeams(teamsData);
+            } catch (error) {
+                console.error('Error fetching team data:', error);
+            }
+        };
+
+        fetchData();
+    }, []);
+    const _renderTeamsItem = ({item, index}) => {
+        return (
+            <TeamItemBox 
+                style={{
+                    marginLeft: index === 0 ? 16 : 0,
+                    marginRight: index === teams.length - 1 ? 0 : 10,
+                }}
+            >
+                <BigTeamLogo source={item.TeamLogo ? { uri: item.TeamLogo } : require('../../../assets/images/Team1.png')}/>
+            </TeamItemBox>
+        )
+    }
+    
+
     const renderMatchesItem = ({ item, index }) => {
-      return (
-        <View
-          style={{
-            marginLeft: index === 0 ? 16 : 0,
-            marginRight: index === matches.length - 1 ? 0 : 10,
-            backgroundColor: '#FFFFFF',
-            padding: 10,
-            borderRadius: 10,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <Image source={{ uri: item.team1.TeamLogo }} style={{ width: 50, height: 50 }} />
-          <Image source={{ uri: item.team2.TeamLogo }} style={{ width: 50, height: 50 }} />
-          <Text style={{ marginTop: 5, fontWeight: 'bold', fontSize: 14 }}>{item.team1.TeamName} vs {item.team2.TeamName}</Text>
-          <Text style={{ fontSize: 12 }}>Match Status: {item.matchstatus}</Text>
-        </View>
-      );
+        return (
+            <MatchItemBox
+            style={{
+              marginLeft: index === 0 ? 16 : 0,
+              marginRight: index === matches.length - 1 ? 0 : 10,
+            }}
+          >
+            <View
+              style={{
+                alignSelf: 'center',
+                padding: 6,
+                backgroundColor: 'white',
+                borderRadius: 30,
+              }}
+            >
+              <McText bold size={9} color="#2648D1">{item.location}</McText>
+            </View>
+            <View style={{
+              width: 90,
+              justifyContent: 'space-between',
+              flexDirection: 'row',
+              marginTop: 9,
+            }}>
+              {item.team1.TeamLogo && (
+                <MediumTeamLogo
+                  source={{ uri: item.team1.TeamLogo }}
+                  style={{ resizeMode: 'cover' }}
+                />
+              )}
+              {item.team2.TeamLogo && (
+                <MediumTeamLogo
+                  source={{ uri: item.team2.TeamLogo }}
+                  style={{ resizeMode: 'cover' }}
+                />
+              )}
+            </View>
+            <McText bold size={10} style={{ marginTop: 9 }}>{item.team1.TeamName}</McText>
+            <McText bold size={8}>Vs</McText>
+            <McText bold size={10}>{item.team2.TeamName}</McText>
+          </MatchItemBox>
+          
+        );
     };
-  
+
+
     const NewsItem = ({ item, index }) => (
       <View>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -197,14 +202,15 @@ const Discover = ({ navigation }) => {
             </McText>
         </Header2Section>
         <View>
-            <FlatList 
-                keyExtractor={(item)=> '_team' + item.id}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{}}
-                data={dummyData.Teams}
-                renderItem={_renderTeamsItem}
-            ></FlatList>
+        <FlatList 
+            keyExtractor={(item) => '_team' + item.id} // Assuming `id` is the unique identifier
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            data={teams}
+            renderItem={_renderTeamsItem}
+        />
+
+
         </View>
         {/*  Matches Section */}
         <Header2Section>
@@ -216,14 +222,15 @@ const Discover = ({ navigation }) => {
             </McText>
         </Header2Section>
         <View>
-            <FlatList
-                keyExtractor={(item) => '_match' + item._id} // Assuming `_id` is the unique identifier
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{}}
-                data={matches}
-                renderItem={renderMatchesItem}
-            ></FlatList>
+        <FlatList
+    keyExtractor={(item) => '_match' + item._id} // Assuming `_id` is the unique identifier
+    horizontal
+    showsHorizontalScrollIndicator={false}
+    contentContainerStyle={{}}
+    data={matches}
+    renderItem={renderMatchesItem}
+></FlatList>
+
         </View>
         {/* News Section */}
         <Header2Section>
@@ -235,31 +242,31 @@ const Discover = ({ navigation }) => {
             </McText>
         </Header2Section>
         <View>
-            <FlatList 
-                keyExtractor={(item)=> '_news' + item.id}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{}}
-                data={dummyData.News}
-                renderItem={ ( {item, index} ) =>  (
-                    <TouchableOpacity
-                        onPress={
-                            () => {
-                                navigation.navigate('ArticleDetail', {selectedArticle: item})
-                            }
-                        }
-                        style={{
-                        width: 319,
-                        height: 93,
-                        marginTop: 15,
-                        marginLeft: index === 0 ? 16 :0,
-                        marginRight: index === dummyData.length - 1 ? 0 : 10,
+        <FlatList 
+    keyExtractor={(item) => '_news' + item.id}
+    horizontal
+    showsHorizontalScrollIndicator={false}
+    contentContainerStyle={{}}
+    data={dummyData.News}
+    renderItem={ ( {item, index} ) =>  (
+        <TouchableOpacity
+            onPress={
+                () => {
+                    navigation.navigate('ArticleDetail', {selectedArticle: item})
+                }
+            }
+            style={{
+                width: 319,
+                height: 93,
+                marginTop: 15,
+                marginLeft: index === 0 ? 16 :0,
+                marginRight: index === dummyData.length - 1 ? 0 : 10,
+            }}>
+            <NewsItem item={item}/>
+        </TouchableOpacity>
+    )}
+></FlatList>
 
-                    }}>
-                        <NewsItem item={item}/>
-                    </TouchableOpacity>
-                )}
-            ></FlatList>
         </View>
         <View style={{marginTop: 20}}></View>
         </ScrollView>
