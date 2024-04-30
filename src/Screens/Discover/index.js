@@ -1,5 +1,5 @@
-import React from "react";
-import { StatusBar, ScrollView, View, FlatList } from 'react-native'
+import React, { useState, useEffect } from "react";
+import { StatusBar, ScrollView, View, FlatList, Image,Text } from 'react-native';
 import { Colors, Fonts, Images } from "Constants";
 import styled from "styled-components/native";
 import {McText, McImage} from 'Components';
@@ -7,6 +7,10 @@ import {LinearGradient} from 'expo-linear-gradient'
 import { dummyData } from 'Mock'
 import moment from "moment";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import axios from 'axios';
+
+
+
 
 const _renderTeamsItem = ({item, index}) => {
     return (
@@ -20,39 +24,7 @@ const _renderTeamsItem = ({item, index}) => {
         </TeamItemBox>
     )
 }
-const _renderMatchesItem = ({item, index}) => {
-    return (
-        <MatchItemBox 
-            style={{
-                marginLeft: index === 0 ? 16 : 0,
-                marginRight: index === dummyData.Teams.length - 1 ? 0 : 10,
-            }}
-        >
-            <View
-                style={{
-                    alignSelf:'center',
-                    padding: 6,
-                    backgroundColor: 'white',
-                    borderRadius: 30
-                }}
-            >
-                <McText bold size={9} color="#2648D1">{item.name}</McText>
-            </View>
-            <View style={{
-                width:90,
-                justifyContent: 'space-between',
-                flexDirection: 'row',
-                marginTop: 9,
-            }}>
-                <MediumTeamLogo source={item.team1.logo} />
-                <MediumTeamLogo source={item.team2.logo} />
-            </View>
-            <McText bold size={10} style={{marginTop: 9}}>{item.team1.name}</McText>
-            <McText bold size={8}>Vs</McText>
-            <McText bold size={10}>{item.team2.name}</McText>
-        </MatchItemBox>
-    )
-}
+
 
 const NewsItem = ({ item, index }) => (
     <View>
@@ -77,10 +49,82 @@ const NewsItem = ({ item, index }) => (
     </View>
 )
 
-const Discover = ( {
-    navigation,
-}) => (
-    <Container>
+const Discover = ({ navigation }) => {
+    const [matches, setMatches] = useState([]);
+  
+    useEffect(() => {
+        // Fetch data from your Node.js API
+        const fetchData = async () => {
+          try {
+            const response = await axios.get('http://192.168.1.17:8000/match/getAllematchByNameTeam');
+            setMatches(response.data);
+          } catch (error) {
+            console.error('Error fetching data:', error);
+          }
+        };
+      
+        fetchData();
+      }, []); // Empty array as second parameter ensures useEffect runs only once
+      
+    const _renderTeamsItem = ({ item, index }) => {
+      return (
+        <TeamItemBox 
+            style={{
+                marginLeft: index === 0 ? 16 : 0,
+                marginRight: index === dummyData.Teams.length - 1 ? 0 : 10,
+            }}
+        >
+            <BigTeamLogo source={item.logo} />
+        </TeamItemBox>
+      );
+    };
+  
+    const renderMatchesItem = ({ item, index }) => {
+      return (
+        <View
+          style={{
+            marginLeft: index === 0 ? 16 : 0,
+            marginRight: index === matches.length - 1 ? 0 : 10,
+            backgroundColor: '#FFFFFF',
+            padding: 10,
+            borderRadius: 10,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Image source={{ uri: item.team1.TeamLogo }} style={{ width: 50, height: 50 }} />
+          <Image source={{ uri: item.team2.TeamLogo }} style={{ width: 50, height: 50 }} />
+          <Text style={{ marginTop: 5, fontWeight: 'bold', fontSize: 14 }}>{item.team1.TeamName} vs {item.team2.TeamName}</Text>
+          <Text style={{ fontSize: 12 }}>Match Status: {item.matchstatus}</Text>
+        </View>
+      );
+    };
+  
+    const NewsItem = ({ item, index }) => (
+      <View>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <McImage source={item.thumbnail} style={{
+              width:120,
+              height: 93,
+              borderRadius: 10,
+              marginRight: 10
+          }}/>
+          <View style={{
+              width: 189,
+              justifyContent: 'space-between'
+          }}>
+              <McText medium size={14} numberOfLines={2}>{item.title}</McText>
+              <McText regular size={11} color="#808191">
+                  {item.views} views - {moment(item.date).fromNow()}
+              </McText>
+              <McText regular size={12}>{item.author.name}</McText>
+          </View>
+        </View>
+      </View>
+    );
+  
+    return (
+        <Container>
         <ScrollView contentContainerStyle={{}} style={{}}>
         <StatusBar hidden={true}/>
         {/* Header Section */}
@@ -172,13 +216,13 @@ const Discover = ( {
             </McText>
         </Header2Section>
         <View>
-            <FlatList 
-                keyExtractor={(item)=> '_match' + item.id}
+            <FlatList
+                keyExtractor={(item) => '_match' + item._id} // Assuming `_id` is the unique identifier
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={{}}
-                data={dummyData.Matches}
-                renderItem={_renderMatchesItem}
+                data={matches}
+                renderItem={renderMatchesItem}
             ></FlatList>
         </View>
         {/* News Section */}
@@ -220,8 +264,8 @@ const Discover = ( {
         <View style={{marginTop: 20}}></View>
         </ScrollView>
     </Container>
-)
-
+    );
+  };
 
 const Container = styled.SafeAreaView`
     flex: 1;
