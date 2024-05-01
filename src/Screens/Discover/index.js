@@ -75,93 +75,109 @@ const Discover = ({ navigation }) => {
     
 
     const renderMatchesItem = ({ item, index }) => {
+        if (item.matchstatus !== "Starting Soon") {
+            return null; 
+        }
+    
+        // Format the date and starting time using moment.js
+        const formattedDateTime = moment(`${item.date} ${item.startingtime}`).format('MMMM Do YYYY, h:mm a');
+    
         return (
             <MatchItemBox
-            style={{
-              marginLeft: index === 0 ? 16 : 0,
-              marginRight: index === matches.length - 1 ? 0 : 10,
-            }}
-          >
-            <View
-              style={{
-                alignSelf: 'center',
-                padding: 6,
-                backgroundColor: 'white',
-                borderRadius: 30,
-              }}
+                style={{
+                    marginLeft: index === 0 ? 16 : 0,
+                    marginRight: index === matches.length - 1 ? 0 : 10,
+                }}
             >
-              <McText bold size={9} color="#2648D1">{item.location}</McText>
-            </View>
-            <View style={{
-              width: 90,
-              justifyContent: 'space-between',
-              flexDirection: 'row',
-              marginTop: 9,
-            }}>
-              {item.team1.TeamLogo && (
-                <MediumTeamLogo
-                  source={{ uri: item.team1.TeamLogo }}
-                  style={{ resizeMode: 'cover' }}
-                />
-              )}
-              {item.team2.TeamLogo && (
-                <MediumTeamLogo
-                  source={{ uri: item.team2.TeamLogo }}
-                  style={{ resizeMode: 'cover' }}
-                />
-              )}
-            </View>
-            <McText bold size={10} style={{ marginTop: 9 }}>{item.team1.TeamName}</McText>
-            <McText bold size={8}>Vs</McText>
-            <McText bold size={10}>{item.team2.TeamName}</McText>
-          </MatchItemBox>
-          
+                <View
+                    style={{
+                        alignSelf: 'center',
+                        padding: 6,
+                        backgroundColor: 'white',
+                        borderRadius: 30,
+                    }}
+                >
+                    <McText bold size={9} color="#2648D1">{item.location}</McText>
+                </View>
+                <View style={{
+                    width: 90,
+                    justifyContent: 'space-between',
+                    flexDirection: 'row',
+                    marginTop: 9,
+                }}>
+                    {item.team1.TeamLogo && (
+                        <MediumTeamLogo
+                            source={{ uri: item.team1.TeamLogo }}
+                            style={{ resizeMode: 'cover' }}
+                        />
+                    )}
+                    {item.team2.TeamLogo && (
+                        <MediumTeamLogo
+                            source={{ uri: item.team2.TeamLogo }}
+                            style={{ resizeMode: 'cover' }}
+                        />
+                    )}
+                </View>
+                <McText bold size={10} style={{ marginTop: 9 }}>{item.team1.TeamName}</McText>
+                <McText bold size={8}>Vs</McText>
+                <McText bold size={10}>{item.team2.TeamName}</McText>
+                <McText bold size={10} style={{ marginLeft: 5 , backgroundColor: 'white',color:"#2648D1"}}>{formattedDateTime}</McText>
+            </MatchItemBox>
         );
     };
     const renderMatchesScoreItem = ({ item, index }) => {
+        if (item.matchstatus !== "Finished") {
+            return null; 
+        }
+    
+        const team1Goals = item.goal1.filter(Boolean).length; 
+        const team2Goals = item.goal2.filter(Boolean).length; 
+    
         return (
             <MatchItemBox
-            style={{
-              marginLeft: index === 0 ? 16 : 0,
-              marginRight: index === matches.length - 1 ? 0 : 10,
-            }}
-          >
-            <View
-              style={{
-                alignSelf: 'center',
-                padding: 6,
-                backgroundColor: 'white',
-                borderRadius: 30,
-              }}
+                style={{
+                    marginLeft: index === 0 ? 16 : 0,
+                    marginRight: index === matches.length - 1 ? 0 : 10,
+                }}
             >
-              <McText bold size={9} color="#2648D1">{item.location}</McText>
-            </View>
-            <View style={{
-              width: 90,
-              justifyContent: 'space-between',
-              flexDirection: 'row',
-              marginTop: 9,
-            }}>
-              {item.team1.TeamLogo && (
-                <MediumTeamLogo
-                  source={{ uri: item.team1.TeamLogo }}
-                  style={{ resizeMode: 'cover' }}
-                />
-              )}
-              {item.team2.TeamLogo && (
-                <MediumTeamLogo
-                  source={{ uri: item.team2.TeamLogo }}
-                  style={{ resizeMode: 'cover' }}
-                />
-              )}
-            </View>
-            <McText bold size={10} style={{ marginTop: 9 }}>{item.team1.TeamName}</McText>
-            <McText bold size={8}>Vs</McText>
-            <McText bold size={10}>{item.team2.TeamName}</McText>
-          </MatchItemBox>
-          
+                <View
+                    style={{
+                        alignSelf: 'center',
+                        padding: 6,
+                        backgroundColor: 'white',
+                        borderRadius: 30,
+                    }}
+                >
+                    <McText bold size={9} color="#2648D1">{item.location}</McText>
+                </View>
+                <View style={{
+                    width: 90,
+                    justifyContent: 'space-between',
+                    flexDirection: 'row',
+                    marginTop: 9,
+                }}>
+                    {item.team1.TeamLogo && (
+                        <MediumTeamLogo
+                            source={{ uri: item.team1.TeamLogo }}
+                            style={{ resizeMode: 'cover' }}
+                        />
+                    )}
+                    {item.team2.TeamLogo && (
+                        <MediumTeamLogo
+                            source={{ uri: item.team2.TeamLogo }}
+                            style={{ resizeMode: 'cover' }}
+                        />
+                    )}
+                </View>
+                <McText bold size={10} style={{ marginTop: 9 }}>{item.team1.TeamName}</McText>
+                <McText bold size={8}>Vs</McText>
+                <McText bold size={10}>{item.team2.TeamName}</McText>
+                <McText bold size={10} style={{ marginLeft: 5 , backgroundColor: 'white',color:"#2648D1"}}>{team1Goals} : {team2Goals}</McText>
+            </MatchItemBox>
         );
     };
+    
+    
 
     const renderNewsItem = ({ item, index }) => (
         <TouchableOpacity
@@ -172,7 +188,7 @@ const Discover = ({ navigation }) => {
                         detail: item.article,
                         author: {
                             name: item.author,
-                            avatar: item.image ? { uri: item.image } : require('../../../assets/images/Avatar1.png')
+                            avatar: item.avatar ? { uri: item.avatar } : require('../../../assets/images/Avatar1.png')
                         },
                         date: item.date,
                         thumbnail: item.image ? { uri: item.image } : require('../../../assets/images/News1.png')
@@ -209,31 +225,6 @@ const Discover = ({ navigation }) => {
         </TouchableOpacity>
     );
     
-    
-    
-    // const NewsItem = ({ item, index }) => (
-    //   <View>
-    //     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-    //       <McImage source={item.thumbnail} style={{
-    //           width:120,
-    //           height: 93,
-    //           borderRadius: 10,
-    //           marginRight: 10
-    //       }}/>
-    //       <View style={{
-    //           width: 189,
-    //           justifyContent: 'space-between'
-    //       }}>
-    //           <McText medium size={14} numberOfLines={2}>{item.title}</McText>
-    //           <McText regular size={11} color="#808191">
-    //               {item.views} views - {moment(item.date).fromNow()}
-    //           </McText>
-    //           <McText regular size={12}>{item.author.name}</McText>
-    //       </View>
-    //     </View>
-    //   </View>
-    // );
-  
     return (
         <Container>
         <ScrollView contentContainerStyle={{}} style={{}}>
