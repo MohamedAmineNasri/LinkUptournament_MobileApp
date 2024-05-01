@@ -131,39 +131,47 @@
     const Container = styled.SafeAreaView`
     flex: 1;
     background: ${(props) => Colors.background};
-    `;
-    const HeaderImage = styled.ImageBackground`
-    width: 375px;
+    justify-content: flex-end; /* Align items at the bottom */
+`;
+
+const HeaderImage = styled.ImageBackground`
+    width: 100%;
     height: 342px;
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    `;
-    const HeaderButtonSection = styled.View`
+    display: flex;
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center horizontally */
+`;
+
+const HeaderButtonSection = styled.View`
     margin: 0px 16px;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    `;
-    const ShareCircle = styled.View`
+    margin-bottom: 16px; /* Add margin bottom */
+`;
+
+const ShareCircle = styled.View`
     width: 52px;
     height: 52px;
     border-radius: 52px;
     background-color: ${(props) => Colors.blue};
     justify-content: center;
     align-items: center;
-    `;
-    const TitleSection = styled.View`
-    margin: 300px 16px 0px;
-    `;
-    const AuthorSection = styled.View`
+`;
+
+const TitleSection = styled.View`
+    margin: 0px 16px 16px; /* Adjust margin */
+`;
+
+const AuthorSection = styled.View`
     height: 38px;
-    margin: 15px 16px;
+    margin: 0px 16px 15px; /* Adjust margin */
     justify-content: space-between;
     align-items: center;
     flex-direction: row;
-    `;
-    const BottomButton = styled.TouchableOpacity`
+`;
+
+const BottomButton = styled.TouchableOpacity`
     width: 262px;
     height: 56px;
     border-radius: 27.5px;
@@ -171,7 +179,7 @@
     margin: 0px 56px;
     align-items: center;
     justify-content: center;
-    position: absolute;
-    bottom: 22px;
-    `;
+    margin-bottom: 22px; /* Add margin bottom */
+`;
+
     export default ArticleDetail;

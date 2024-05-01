@@ -15,6 +15,7 @@ import axios from 'axios';
 const Discover = ({ navigation }) => {
     const [matches, setMatches] = useState([]);
     const [teams, setTeams] = useState([]);
+    const [news, setNews] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -45,6 +46,20 @@ const Discover = ({ navigation }) => {
 
         fetchData();
     }, []);
+        
+
+        useEffect(() => {
+            const fetchData = async () => {
+                try {
+                    const response = await axios.get('http://192.168.1.17:8000/news');
+                    setNews(response.data);
+                } catch (error) {
+                    console.error('Error fetching news data:', error);
+                }
+            };
+
+            fetchData();
+        }, []);
     const _renderTeamsItem = ({item, index}) => {
         return (
             <TeamItemBox 
@@ -103,30 +118,121 @@ const Discover = ({ navigation }) => {
           
         );
     };
+    const renderMatchesScoreItem = ({ item, index }) => {
+        return (
+            <MatchItemBox
+            style={{
+              marginLeft: index === 0 ? 16 : 0,
+              marginRight: index === matches.length - 1 ? 0 : 10,
+            }}
+          >
+            <View
+              style={{
+                alignSelf: 'center',
+                padding: 6,
+                backgroundColor: 'white',
+                borderRadius: 30,
+              }}
+            >
+              <McText bold size={9} color="#2648D1">{item.location}</McText>
+            </View>
+            <View style={{
+              width: 90,
+              justifyContent: 'space-between',
+              flexDirection: 'row',
+              marginTop: 9,
+            }}>
+              {item.team1.TeamLogo && (
+                <MediumTeamLogo
+                  source={{ uri: item.team1.TeamLogo }}
+                  style={{ resizeMode: 'cover' }}
+                />
+              )}
+              {item.team2.TeamLogo && (
+                <MediumTeamLogo
+                  source={{ uri: item.team2.TeamLogo }}
+                  style={{ resizeMode: 'cover' }}
+                />
+              )}
+            </View>
+            <McText bold size={10} style={{ marginTop: 9 }}>{item.team1.TeamName}</McText>
+            <McText bold size={8}>Vs</McText>
+            <McText bold size={10}>{item.team2.TeamName}</McText>
+          </MatchItemBox>
+          
+        );
+    };
 
-
-    const NewsItem = ({ item, index }) => (
-      <View>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <McImage source={item.thumbnail} style={{
-              width:120,
-              height: 93,
-              borderRadius: 10,
-              marginRight: 10
-          }}/>
-          <View style={{
-              width: 189,
-              justifyContent: 'space-between'
-          }}>
-              <McText medium size={14} numberOfLines={2}>{item.title}</McText>
-              <McText regular size={11} color="#808191">
-                  {item.views} views - {moment(item.date).fromNow()}
-              </McText>
-              <McText regular size={12}>{item.author.name}</McText>
-          </View>
-        </View>
-      </View>
+    const renderNewsItem = ({ item, index }) => (
+        <TouchableOpacity
+            onPress={() => {
+                navigation.navigate('ArticleDetail', {
+                    selectedArticle: {
+                        title: item.newsTitle,
+                        detail: item.article,
+                        author: {
+                            name: item.author,
+                            avatar: item.image ? { uri: item.image } : require('../../../assets/images/Avatar1.png')
+                        },
+                        date: item.date,
+                        thumbnail: item.image ? { uri: item.image } : require('../../../assets/images/News1.png')
+                    }
+                });
+            }}
+            style={{
+                width: 319,
+                height: 93,
+                marginTop: 15,
+                marginLeft: index === 0 ? 16 : 0,
+                marginRight: index === news.length - 1 ? 0 : 10,
+            }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                <McImage
+                    source={item.image ? { uri: item.image } : require('../../../assets/images/News1.png')}
+                    style={{
+                        width: 120,
+                        height: 93,
+                        borderRadius: 10,
+                        marginRight: 10
+                    }}
+                />
+                <View style={{ width: 189, justifyContent: 'space-between' }}>
+                    <McText medium size={14} numberOfLines={2}>{item.newsTitle}</McText>
+                    <View style={{ flexDirection: 'column' }}>
+                        <McText regular size={12}>{item.author}</McText>
+                        <McText regular size={11} color="#808191">
+                            {moment(item.date).fromNow() } 
+                        </McText>
+                    </View>
+                </View>
+            </View>
+        </TouchableOpacity>
     );
+    
+    
+    
+    // const NewsItem = ({ item, index }) => (
+    //   <View>
+    //     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+    //       <McImage source={item.thumbnail} style={{
+    //           width:120,
+    //           height: 93,
+    //           borderRadius: 10,
+    //           marginRight: 10
+    //       }}/>
+    //       <View style={{
+    //           width: 189,
+    //           justifyContent: 'space-between'
+    //       }}>
+    //           <McText medium size={14} numberOfLines={2}>{item.title}</McText>
+    //           <McText regular size={11} color="#808191">
+    //               {item.views} views - {moment(item.date).fromNow()}
+    //           </McText>
+    //           <McText regular size={12}>{item.author.name}</McText>
+    //       </View>
+    //     </View>
+    //   </View>
+    // );
   
     return (
         <Container>
@@ -180,17 +286,18 @@ const Discover = ({ navigation }) => {
                     </View>
                     <McText size={17} style={{
                         fontFamily: 'Inter-SemiBold'
-                    }}>Zidane and Real Madrid: When it went wrong and what's next</McText>
-                    <McText size={12} style={{
-                        fontFamily: 'Inter-Regular'
-                    }}>Tommorw, 06.30 PM</McText>
+                        , marginRight: 4
+                    }}>LinkUpTournament :Football Tournament Management System</McText>
+                    <McText size={12} style={{ fontFamily: 'Inter-Regular' }}>
+                        First Edition
+                    </McText>
                 </View>
             </LinearGradient>
             <View style={{
                 flexDirection: 'row',
                 justifyContent: 'flex-end'
             }}>
-                <McImage source={require('Assets/images/Zidane.png')}/>
+                <McImage source={require('Assets/images/soccerteam.png')} style={{width: 250, height: 300, marginTop: -20, marginRight: -5}}/>
             </View>
         </BannerSection>
         <Header2Section>
@@ -223,14 +330,35 @@ const Discover = ({ navigation }) => {
         </Header2Section>
         <View>
         <FlatList
-    keyExtractor={(item) => '_match' + item._id} // Assuming `_id` is the unique identifier
-    horizontal
-    showsHorizontalScrollIndicator={false}
-    contentContainerStyle={{}}
-    data={matches}
-    renderItem={renderMatchesItem}
-></FlatList>
+            keyExtractor={(item) => '_match' + item._id} // Assuming `_id` is the unique identifier
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{}}
+            data={matches}
+            renderItem={renderMatchesItem}
+        ></FlatList>
 
+        </View>
+
+
+        {/*  Matches Score Section */}
+        <Header2Section>
+            <McText semi size={18}>
+                Matches Score
+            </McText>
+            <McText semi size={9} color='#A0A3BD'>
+                View All
+            </McText>
+        </Header2Section>
+        <View>
+        <FlatList
+            keyExtractor={(item) => '_match' + item._id}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{}}
+            data={matches}
+            renderItem={renderMatchesScoreItem}
+        ></FlatList>
         </View>
         {/* News Section */}
         <Header2Section>
@@ -242,32 +370,15 @@ const Discover = ({ navigation }) => {
             </McText>
         </Header2Section>
         <View>
-        <FlatList 
-    keyExtractor={(item) => '_news' + item.id}
-    horizontal
-    showsHorizontalScrollIndicator={false}
-    contentContainerStyle={{}}
-    data={dummyData.News}
-    renderItem={ ( {item, index} ) =>  (
-        <TouchableOpacity
-            onPress={
-                () => {
-                    navigation.navigate('ArticleDetail', {selectedArticle: item})
-                }
-            }
-            style={{
-                width: 319,
-                height: 93,
-                marginTop: 15,
-                marginLeft: index === 0 ? 16 :0,
-                marginRight: index === dummyData.length - 1 ? 0 : 10,
-            }}>
-            <NewsItem item={item}/>
-        </TouchableOpacity>
-    )}
-></FlatList>
-
-        </View>
+                    <FlatList
+                        keyExtractor={(item) => '_news' + item._id}
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={{}}
+                        data={news}
+                        renderItem={renderNewsItem}
+                    />
+                </View>
         <View style={{marginTop: 20}}></View>
         </ScrollView>
     </Container>
