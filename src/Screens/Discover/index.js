@@ -83,6 +83,13 @@ const Discover = ({ navigation }) => {
         const formattedDateTime = moment(`${item.date} ${item.startingtime}`).format('MMMM Do YYYY, h:mm a');
     
         return (
+            <TouchableOpacity
+                onPress={() => {
+                    navigation.navigate('MatchDetails', {
+                        selectedMatch: item,
+                    });
+                }}
+            >
             <MatchItemBox
                 style={{
                     marginLeft: index === 0 ? 16 : 0,
@@ -123,8 +130,10 @@ const Discover = ({ navigation }) => {
                 <McText bold size={10}>{item.team2.TeamName}</McText>
                 <McText bold size={10} style={{ marginLeft: 5 , backgroundColor: 'white',color:"#2648D1"}}>{formattedDateTime}</McText>
             </MatchItemBox>
+          </TouchableOpacity>
         );
-    };
+      };
+      
     const renderMatchesScoreItem = ({ item, index }) => {
         if (item.matchstatus !== "Finished") {
             return null; 
